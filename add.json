@@ -1,32 +1,32 @@
 {
   "8.1": {
     "label": "Aula 8.1",
-    "mapUrl": "https://SITO-MAPPA-8-1.com",
-    "reportUrl": "https://SITO-SEGNALAZIONI-8-1.com"
+    "mapUrl": "https://INSERISCI-QUI-LINK-MAPPA-8-1",
+    "reportUrl": "https://INSERISCI-QUI-LINK-SEGNALAZIONI-8-1"
   },
   "1.3": {
     "label": "Aula 1.3",
-    "mapUrl": "https://SITO-MAPPA-1-3.com",
-    "reportUrl": "https://SITO-SEGNALAZIONI-1-3.com"
+    "mapUrl": "https://INSERISCI-QUI-LINK-MAPPA-1-3",
+    "reportUrl": "https://INSERISCI-QUI-LINK-SEGNALAZIONI-1-3"
   },
   "IV": {
     "label": "Aula IV",
-    "mapUrl": "https://SITO-MAPPA-IV.com",
-    "reportUrl": "https://SITO-SEGNALAZIONI-IV.com"
+    "mapUrl": "https://INSERISCI-QUI-LINK-MAPPA-IV",
+    "reportUrl": "https://INSERISCI-QUI-LINK-SEGNALAZIONI-IV"
   },
   "Laboratorio di fotografia": {
     "label": "Laboratorio di fotografia",
-    "mapUrl": "https://SITO-MAPPA-FOTO.com",
-    "reportUrl": "https://SITO-SEGNALAZIONI-FOTO.com"
+    "mapUrl": "https://INSERISCI-QUI-LINK-MAPPA-FOTO",
+    "reportUrl": "https://INSERISCI-QUI-LINK-SEGNALAZIONI-FOTO"
   },
   "5.7": {
     "label": "Aula 5.7",
-    "mapUrl": "https://SITO-MAPPA-5-7.com",
-    "reportUrl": "https://SITO-SEGNALAZIONI-5-7.com"
+    "mapUrl": "https://INSERISCI-QUI-LINK-MAPPA-5-7",
+    "reportUrl": "https://INSERISCI-QUI-LINK-SEGNALAZIONI-5-7"
   },
   "DMR1": {
     "label": "Aula DMR1",
-    "mapUrl": "https://SITO-MAPPA-DMR1.com",
-    "reportUrl": "https://SITO-SEGNALAZIONI-DMR1.com"
+    "mapUrl": "https://INSERISCI-QUI-LINK-MAPPA-DMR1",
+    "reportUrl": "https://INSERISCI-QUI-LINK-SEGNALAZIONI-DMR1"
   }
 }
