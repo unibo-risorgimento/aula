@@ -1,38 +1,229 @@
-<script>
-  const params = new URLSearchParams(location.search);
-  const aula = params.get("aula") || "8.1";
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aula</title>
+  <style>
+    :root{
+      --red:#b02a2a;
+      --text:#111;
+      --muted:#666;
+      --border:#ddd;
+      --bg:#fff;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    .wrap{
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom: 26px;
+    }
+    .logoBox{
+      width: 140px;
+      height: 140px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .langBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 66px;
+      height: 54px;
+      border-radius: 16px;
+      background: var(--red);
+      color: #fff;
+      text-decoration:none;
+      font-weight: 800;
+      letter-spacing: .5px;
+      user-select:none;
+    }
+    h1{
+      margin: 6px 0 26px;
+      text-align:center;
+      font-size: 42px;
+      line-height: 1.05;
+      font-weight: 800;
+    }
+    .btn{
+      display:block;
+      text-align:center;
+      padding: 18px 16px;
+      margin: 16px 0;
+      border-radius: 18px;
+      background: var(--red);
+      color: #fff;
+      text-decoration:none;
+      font-size: 30px;
+      font-weight: 700;
+      user-select:none;
+    }
+    .btn:active{ transform: scale(0.99); }
+    .hint{
+      margin-top: 18px;
+      text-align:center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .error{
+      background:#fff4e5;
+      border:1px solid #ffd9a8;
+      padding:12px 14px;
+      border-radius: 14px;
+      margin-top: 18px;
+      color:#6b3b00;
+      font-size: 14px;
+    }
+    .row{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .pill{
+      border:1px solid var(--border);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .smallLink{
+      color: var(--red);
+      text-decoration:none;
+      font-weight: 700;
+    }
+  </style>
+</head>
 
-  async function run(){
-    const res = await fetch("aule.json");
-    const db = await res.json();
+<body>
+  <main class="wrap">
+    <div class="top">
+      <div class="logoBox" id="logoBox">Logo</div>
+      <a class="langBtn" href="#" id="langBtn" aria-label="Cambia lingua">EN</a>
+    </div>
 
-    const info = db[aula];
+    <h1 id="title">Aula</h1>
 
-    // Se manca l’aula nel JSON: messaggio di errore (così non “rompe”)
-    if(!info){
-      document.getElementById("title").textContent = `Aula ${aula}`;
-      document.getElementById("hint").textContent =
-        "Link non configurati: aggiungi questa aula in aule.json.";
-      document.getElementById("mapBtn").style.opacity = 0.5;
-      document.getElementById("reportBtn").style.opacity = 0.5;
-      document.getElementById("mapBtn").href = "#";
-      document.getElementById("reportBtn").href = "#";
-      return;
+    <a class="btn" id="mapBtn" href="#" role="button">Mappa</a>
+    <a class="btn" id="reportBtn" href="#" role="button">Segnalazioni</a>
+
+    <div class="hint" id="hint"></div>
+    <div class="error" id="errorBox" style="display:none;"></div>
+
+    <div class="row" id="metaRow" style="display:none;">
+      <div class="pill" id="metaAula"></div>
+      <div class="pill" id="metaMode"></div>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const aulaParam = params.get("aula") || "8.1";
+
+    // Lingua demo (non cambia contenuti, ma ti lascia il bottone pronto)
+    let isEN = false;
+
+    function setDisabled(el, disabled){
+      if(disabled){
+        el.href = "#";
+        el.style.opacity = 0.55;
+        el.style.pointerEvents = "none";
+      }else{
+        el.style.opacity = 1;
+        el.style.pointerEvents = "auto";
+      }
     }
 
-    document.title = info.label;
-    document.getElementById("title").textContent = info.label;
+    async function run(){
+      const titleEl = document.getElementById("title");
+      const mapBtn = document.getElementById("mapBtn");
+      const reportBtn = document.getElementById("reportBtn");
+      const hintEl = document.getElementById("hint");
+      const errorBox = document.getElementById("errorBox");
 
-    // BOTTONI → SITI ESTERNI specifici dell’aula
-    document.getElementById("mapBtn").href = info.mapUrl;
-    document.getElementById("reportBtn").href = info.reportUrl;
+      // Mostra in piccolo che aula stai leggendo (utile in debug / tesi)
+      document.getElementById("metaRow").style.display = "flex";
+      document.getElementById("metaAula").textContent = `aula=${aulaParam}`;
+      document.getElementById("metaMode").textContent = `source=add.json`;
 
-    // facoltativo: apre in nuova scheda
-    document.getElementById("mapBtn").target = "_blank";
-    document.getElementById("reportBtn").target = "_blank";
-    document.getElementById("mapBtn").rel = "noopener";
-    document.getElementById("reportBtn").rel = "noopener";
-  }
+      let db;
+      try{
+        const res = await fetch("add.json", { cache: "no-store" });
+        db = await res.json();
+      }catch(e){
+        titleEl.textContent = "Aula";
+        setDisabled(mapBtn, true);
+        setDisabled(reportBtn, true);
+        errorBox.style.display = "block";
+        errorBox.textContent = "Errore: non riesco a leggere add.json. Controlla che esista nel repo e che sia JSON valido.";
+        return;
+      }
 
-  run();
-</script>
+      const info = db[aulaParam];
+
+      if(!info){
+        titleEl.textContent = `Aula ${aulaParam}`;
+        setDisabled(mapBtn, true);
+        setDisabled(reportBtn, true);
+        errorBox.style.display = "block";
+        errorBox.textContent = "Questa aula non è configurata in add.json. Aggiungi la chiave con mapUrl e reportUrl.";
+        hintEl.innerHTML = `Suggerimento: prova un link tipo <a class="smallLink" href="?aula=8.1">?aula=8.1</a>`;
+        return;
+      }
+
+      const label = info.label || `Aula ${aulaParam}`;
+      document.title = label;
+      titleEl.textContent = label;
+
+      // Link esterni specifici dell’aula
+      mapBtn.href = info.mapUrl;
+      reportBtn.href = info.reportUrl;
+
+      // Apri in nuova scheda (puoi togliere se vuoi)
+      mapBtn.target = "_blank";
+      reportBtn.target = "_blank";
+      mapBtn.rel = "noopener";
+      reportBtn.rel = "noopener";
+
+      hintEl.textContent = isEN
+        ? "Scan QR → open this page → choose Map or Reports."
+        : "Scansiona il QR → apri questa pagina → scegli Mappa o Segnalazioni.";
+
+      // Bottone lingua: demo (se vuoi davvero EN/IT dimmelo e te lo faccio)
+      document.getElementById("langBtn").addEventListener("click", (e) => {
+        e.preventDefault();
+        isEN = !isEN;
+        document.getElementById("langBtn").textContent = isEN ? "IT" : "EN";
+        mapBtn.textContent = isEN ? "Map" : "Mappa";
+        reportBtn.textContent = isEN ? "Reports" : "Segnalazioni";
+        hintEl.textContent = isEN
+          ? "Scan QR → open this page → choose Map or Reports."
+          : "Scansiona il QR → apri questa pagina → scegli Mappa o Segnalazioni.";
+      });
+    }
+
+    run();
+  </script>
+</body>
+</html>
