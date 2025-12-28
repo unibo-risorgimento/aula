@@ -1,0 +1,38 @@
+<script>
+  const params = new URLSearchParams(location.search);
+  const aula = params.get("aula") || "8.1";
+
+  async function run(){
+    const res = await fetch("aule.json");
+    const db = await res.json();
+
+    const info = db[aula];
+
+    // Se manca l’aula nel JSON: messaggio di errore (così non “rompe”)
+    if(!info){
+      document.getElementById("title").textContent = `Aula ${aula}`;
+      document.getElementById("hint").textContent =
+        "Link non configurati: aggiungi questa aula in aule.json.";
+      document.getElementById("mapBtn").style.opacity = 0.5;
+      document.getElementById("reportBtn").style.opacity = 0.5;
+      document.getElementById("mapBtn").href = "#";
+      document.getElementById("reportBtn").href = "#";
+      return;
+    }
+
+    document.title = info.label;
+    document.getElementById("title").textContent = info.label;
+
+    // BOTTONI → SITI ESTERNI specifici dell’aula
+    document.getElementById("mapBtn").href = info.mapUrl;
+    document.getElementById("reportBtn").href = info.reportUrl;
+
+    // facoltativo: apre in nuova scheda
+    document.getElementById("mapBtn").target = "_blank";
+    document.getElementById("reportBtn").target = "_blank";
+    document.getElementById("mapBtn").rel = "noopener";
+    document.getElementById("reportBtn").rel = "noopener";
+  }
+
+  run();
+</script>
